@@ -1,0 +1,2 @@
+char* interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[]);
+
