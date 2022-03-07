@@ -8,15 +8,11 @@ char* interpretChargingCurrentRangeAndOccurences(int* chargingCurrentSamples){
 	size_t numberOfSamples, numberOfOccurences;
 
 	numberOfSamples = findNumberOfSamples(chargingCurrentSamples);
-	numberOfOccurences = numberOfSamples; // Since input is conidered as a single range
-	maxValue = chargingCurrentSamples[0]; // Initializing to first element
-	for (size_t i=0; i<numberOfSamples; i++) {
-		if(chargingCurrentSamples[i] > maxValue){
-			maxValue = chargingCurrentSamples[i];
-		}
-	}
 	minValue = findMinValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
+	maxValue = findMaxValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
+	numberOfOccurences = numberOfSamples; // Since input is conidered as a single range
 	sprintf(chargingCurrentRangeAndOccurences, "%d-%d, %lu", minValue, maxValue, numberOfOccurences);
+	printf("Range, Readings \n");
 	printf("%s\n", chargingCurrentRangeAndOccurences);
 	return chargingCurrentRangeAndOccurences;
 }
@@ -36,4 +32,15 @@ int findMinValueOfChargingCurrentRange(int* chargingCurrentSamples, size_t numbe
 		}
 	}
 	return minValue;
+}
+
+int findMaxValueOfChargingCurrentRange(int* chargingCurrentSamples, size_t numberOfSamples){
+	int maxValue;
+	maxValue = chargingCurrentSamples[0]; // Initializing to first element
+	for (size_t i=0; i<numberOfSamples; i++) {
+		if(chargingCurrentSamples[i] > maxValue){
+			maxValue = chargingCurrentSamples[i];
+		}
+	}
+	return maxValue;
 }
