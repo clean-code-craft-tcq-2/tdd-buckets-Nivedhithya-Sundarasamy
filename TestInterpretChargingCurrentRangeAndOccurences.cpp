@@ -25,3 +25,11 @@ TEST_CASE("Checks the minimum value in a given charging current range") {
 	int minValueForChargingCurrentRange = findMinValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
 	REQUIRE(minValueForChargingCurrentRange == expectedMinValue);
 }
+
+TEST_CASE("Checks the maximum value in a given charging current range") {
+	int chargingCurrentSamples[] = {4,5};
+	int expectedMaxValue = 5;
+	size_t numberOfSamples = findNumberOfSamples(chargingCurrentSamples);
+	int maxValueForChargingCurrentRange = findMaxValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
+	REQUIRE(maxValueForChargingCurrentRange == expectedMaxValue);
+}
