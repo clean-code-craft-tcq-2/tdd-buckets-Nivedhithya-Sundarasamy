@@ -1,2 +1,3 @@
-char* interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[]);
+char* interpretChargingCurrentRangeAndOccurences(int* chargingCurrentSamples);
+int findMinValueOfChargingCurrentRange(int* chargingCurrentSamples);
 
