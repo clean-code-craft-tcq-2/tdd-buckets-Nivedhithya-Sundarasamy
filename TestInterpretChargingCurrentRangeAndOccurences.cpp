@@ -10,3 +10,10 @@ TEST_CASE("Checks the charging current range and its occurences") {
 	rangeAndOccurences = interpretChargingCurrentRangeAndOccurences(chargingCurrentSamples);
 	REQUIRE(strcmp(rangeAndOccurences, expectedRangeAndOccurences) == 0);
 }
+
+TEST_CASE("Checks the minimum value in a given charging current range") {
+	int chargingCurrentSamples[] = {4,5};
+	int expectedMinValue = 4;
+	int minValueForChargingCurrentRange = findMinValueOfChargingCurrentRange(chargingCurrentSamples);
+	REQUIRE(minValueForChargingCurrentRange == expectedMinValue);
+}
