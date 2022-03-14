@@ -2,19 +2,17 @@
 #include <stdlib.h>
 #include "InterpretChargingCurrentRangeAndOccurences.h"
 
-char* interpretChargingCurrentRangeAndOccurences(int* chargingCurrentSamples){
-	char *chargingCurrentRangeAndOccurences = (char*)malloc(100);
+void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], char* chargingCurrentRangeAndOccurences[], size_t numberOfSamples){
 	int maxValue, minValue;
-	size_t numberOfSamples, numberOfOccurences;
+	size_t numberOfOccurences;
 
 	numberOfSamples = findNumberOfSamples(chargingCurrentSamples);
 	minValue = findMinValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
 	maxValue = findMaxValueOfChargingCurrentRange(chargingCurrentSamples, numberOfSamples);
 	numberOfOccurences = numberOfSamples; // Since input is conidered as a single range
-	sprintf(chargingCurrentRangeAndOccurences, "%d-%d, %lu", minValue, maxValue, numberOfOccurences);
+	sprintf(chargingCurrentRangeAndOccurences[0], "%d-%d, %lu", minValue, maxValue, numberOfOccurences);
 	printf("Range, Readings \n");
 	printf("%s\n", chargingCurrentRangeAndOccurences);
-	return chargingCurrentRangeAndOccurences;
 }
 
 size_t findNumberOfSamples(int* chargingCurrentSamples) {
