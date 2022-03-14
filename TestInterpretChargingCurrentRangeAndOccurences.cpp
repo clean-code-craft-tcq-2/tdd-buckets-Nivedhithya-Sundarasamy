@@ -5,13 +5,12 @@
 
 TEST_CASE("Checks the charging current range and its occurences") {
 	int chargingCurrentSamples[] = {4,5,8,9,10};
-	const char* expectedRangeAndOccurences[2] = {"4-5, 2", "8-10, 2"};
 	char* rangeAndOccurences[2];
 	size_t numberOfSamples;
 	numberOfSamples = sizeof(chargingCurrentSamples) / sizeof(chargingCurrentSamples[0]);
 	interpretChargingCurrentRangeAndOccurences(chargingCurrentSamples, rangeAndOccurences, numberOfSamples);
-	REQUIRE(strcmp(rangeAndOccurences[0], expectedRangeAndOccurences[0]) == 0);
-	REQUIRE(strcmp(rangeAndOccurences[1], expectedRangeAndOccurences[1]) == 0);
+	REQUIRE(strcmp(rangeAndOccurences[0], "4-5, 2") == 0);
+	REQUIRE(strcmp(rangeAndOccurences[1], "8-10, 3") == 0);
 }
 
 TEST_CASE("Check the size of given charging current samples") {

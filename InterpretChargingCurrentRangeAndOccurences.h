@@ -1,7 +1,7 @@
 struct RangeAndOccurences {
 	int minValue;
 	int maxValue;
-	size_t Occurences;
+	int Occurences;
 };
 void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], char* chargingCurrentRangeAndOccurences[], size_t numberOfSamples);
 size_t findNumberOfSamples(int* chargingCurrentSamples);
