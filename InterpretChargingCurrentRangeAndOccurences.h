@@ -12,5 +12,5 @@ void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRan
 int* sortSamples(int* chargingCurrentSamples, size_t numberOfSamples);
 void swap(int* xp, int* yp);
 int* checkForConsecutiveSamples(int* chargingCurrentSamples, size_t numberOfSamples);
-int* checkForValidityOfSamples(int* chargingCurrentSamples,  size_t numberOfSamples);
+bool checkForValidityOfSamples(int* chargingCurrentSamples,  size_t numberOfSamples);
 
