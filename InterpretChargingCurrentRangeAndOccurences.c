@@ -35,19 +35,20 @@ void formatOutputInCSV(RangeAndOccurences rangeAndOccurences[], int numberOfRang
 	printOutputInCSV(chargingCurrentRangeAndOccurences, numberOfRanges);
 }
 
-void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], char* chargingCurrentRangeAndOccurences[], size_t numberOfSamples){
+void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], char* chargingCurrentRangeAndOccurences[], int &numberOfRanges, size_t numberOfSamples){
 	int* availableRanges[NUMBER_OF_RANGES_SUPPORTED];
-	int numberOfRanges, validityStatus;
+	int validityStatus;
 	RangeAndOccurences rangeAndOccurences[NUMBER_OF_RANGES_SUPPORTED];
 	int* sortedChargingCurrentSamples;
-	
 
 	allocateIntJaggedArray(availableRanges, NUMBER_OF_RANGES_SUPPORTED);
 	validityStatus = checkForValidityOfSamples(chargingCurrentSamples, numberOfSamples);
 	if(validityStatus)
 		sortedChargingCurrentSamples = checkForConsecutiveSamples(chargingCurrentSamples, numberOfSamples);
 	else{
-		printf("Charging current sample is having invalid element \n");
+		sprintf(chargingCurrentRangeAndOccurences[0], "Invalid Samples");
+		numberOfRanges = 1; //Number of range defaults to 1 for samples with invalied element
+		printOutputInCSV(chargingCurrentRangeAndOccurences, 1);
 		return;
 	}
 	checkForAvailableRanges(sortedChargingCurrentSamples, &numberOfRanges, numberOfSamples, availableRanges, rangeAndOccurences);
@@ -58,18 +59,17 @@ bool checkValidityStatus(int validElementCount, int numberOfSamples) {
 	return (validElementCount == numberOfSamples) ? 1 : 0;
 }
 
-int checkIfElementIsValid(int* chargingCurrentSamples, int index) {
-	static int validElementCount=0;
+int checkIfElementIsValid(int* chargingCurrentSamples, int index, int currentValidElementCount) {
+	int validElementCount=currentValidElementCount;
 	if((chargingCurrentSamples[index] != '\0') && (chargingCurrentSamples[index] > 0))
 		validElementCount++;
 	return validElementCount;
 }
 	
 bool checkForValidityOfSamples(int* chargingCurrentSamples,  size_t numberOfSamples){
-	int validElementCount=0;
-	
+	int validElementCount = 0;
 	for (size_t i=0; i<numberOfSamples; i++) {
-		validElementCount = checkIfElementIsValid(chargingCurrentSamples, i);
+		validElementCount = checkIfElementIsValid(chargingCurrentSamples, i, validElementCount);
 	}
 	return checkValidityStatus(validElementCount, numberOfSamples);
 }
@@ -83,13 +83,12 @@ int checkIfElementsAreCosnecutive(int gapBetweenConsecutiveElements) {
 	if((gapBetweenConsecutiveElements == 1) || (gapBetweenConsecutiveElements == 0))
 		consecutiveElementCount++;
 	return consecutiveElementCount;
-}
-	
-	
+}	
+
 int* checkForConsecutiveSamples(int* chargingCurrentSamples, size_t numberOfSamples){
 	int gapBetweenConsecutiveElements;
-	size_t i, consecutiveElementCount;
-	for (i=0; i<numberOfSamples; i++) {
+	size_t consecutiveElementCount;
+	for (size_t i=0; i<numberOfSamples; i++) {
 		gapBetweenConsecutiveElements = chargingCurrentSamples[i+1] - chargingCurrentSamples[i];
 		consecutiveElementCount = checkIfElementsAreCosnecutive(gapBetweenConsecutiveElements);
 	}
@@ -130,8 +129,9 @@ int getGapBetweenConsecutiveElements(int* sortedChargingCurrentSamples,  size_t 
 }
 
 void splitSamplesBasedOnRange(int* sortedChargingCurrentSamples, size_t index, int *subsetOfChargingCurrentSamples[],
-			RangeAndOccurences rangeAndOccurences[], int* rowIndexValue, int* columnIndexValue, int gapBetweenConsecutiveElements) {
-		static int rowIndex = 0, columnIndex = 0;
+			RangeAndOccurences rangeAndOccurences[], int* rowIndexValue, int* columnIndexValue, int currentRowIndex, int currentColumnIndex, int gapBetweenConsecutiveElements) {
+		int rowIndex = currentRowIndex;
+		int columnIndex = currentColumnIndex;
 		if((gapBetweenConsecutiveElements == 1) || (gapBetweenConsecutiveElements == 0)){
 			subsetOfChargingCurrentSamples[rowIndex][columnIndex] = sortedChargingCurrentSamples[index];
 			columnIndex++;
@@ -151,7 +151,8 @@ void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRan
 	int gapBetweenConsecutiveElements, rowIndex = 0, columnIndex = 0;
 	for (size_t i = 0; i < numberOfSamples; i++) {
 		gapBetweenConsecutiveElements = getGapBetweenConsecutiveElements(sortedChargingCurrentSamples, numberOfSamples, i);
-		splitSamplesBasedOnRange(sortedChargingCurrentSamples, i, subsetOfChargingCurrentSamples, rangeAndOccurences, &rowIndex, &columnIndex, gapBetweenConsecutiveElements);
+		splitSamplesBasedOnRange(sortedChargingCurrentSamples, i, subsetOfChargingCurrentSamples, rangeAndOccurences, &rowIndex, &columnIndex,
+			rowIndex, columnIndex, gapBetweenConsecutiveElements);
 	}
 	rangeAndOccurences[rowIndex].Occurences = columnIndex;
 	*numberOfRanges = rowIndex+1;
