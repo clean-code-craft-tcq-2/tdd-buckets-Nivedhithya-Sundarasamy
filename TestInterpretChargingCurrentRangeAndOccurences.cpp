@@ -36,16 +36,22 @@ TEST_CASE("Checks the charging current range and its occurences for different in
 	freeMemoryForCharJaggedArray(rangeAndOccurences, numberOfRanges);
 }
 
-TEST_CASE("Checks for the current values for given 'n' bit resolution array") {
+TEST_CASE("Checks for the current values for given 'n' bit resolution array and measurement range") {
 	
 	// Input Samples
-	int ADC_ConverterValues_12bit[] = {100, 3096, 2056, 4078};
-
+	int ADC_ConverterValues_12bit_0[] = {100, 3096, 2056, 4078};
+	int ADC_ConverterValues_12bit_1[] = {375, 1895, 4093};
+	int *ADC_ConverterValues[] = {ADC_ConverterValues_12bit_0, ADC_ConverterValues_12bit_1};
+ 
 	// Size of input samples
-	size_t numberOfSamples_12bit = sizeof(ADC_ConverterValues_12bit) / sizeof(ADC_ConverterValues_12bit[0]);
+	size_t numberOfSamples_12bit_0 = sizeof(ADC_ConverterValues_12bit_0) / sizeof(ADC_ConverterValues_12bit_0[0]);
+	size_t numberOfSamples_12bit_1 = sizeof(ADC_ConverterValues_12bit_1) / sizeof(ADC_ConverterValues_12bit_1[0]);
+	size_t numberOfSamples[] = {numberOfSamples_12bit_0, numberOfSamples_12bit_1};
 
 	// Expected Output
-	int expectedChargingCurrentValues[] = {0, 8, 5, 10};
+	int expectedChargingCurrentValues_0[] = {0, 8, 5, 10};
+	int expectedChargingCurrentValues_1[] = {1, 5, 10};
+	int* expectedChargingCurrentValues[] = {expectedChargingCurrentValues_0, expectedChargingCurrentValues_1};
 	
 	// ADC Resolution
 	int ADC_Resolution = 12;
@@ -54,10 +60,103 @@ TEST_CASE("Checks for the current values for given 'n' bit resolution array") {
 	signed int minCurrentValue = 0;
 	signed int maxCurrentValue = 10;
 	
-	int chargingCurrentValues[numberOfSamples_12bit];
 	
-	interpretChargingCurrentValue(ADC_ConverterValues_12bit, numberOfSamples_12bit, ADC_Resolution, minCurrentValue, maxCurrentValue, chargingCurrentValues);
-	for(size_t i=0; i<numberOfSamples_12bit; i++) {
-		 REQUIRE(chargingCurrentValues[i] == expectedChargingCurrentValues[i]);
+	for(size_t i=0; i<2; i++) {
+		int chargingCurrentValues[i];
+		interpretChargingCurrentValue(ADC_ConverterValues[i], numberOfSamples[i], ADC_Resolution, minCurrentValue, maxCurrentValue, chargingCurrentValues);
+		for(size_t j=0; j<numberOfSamples[i]; j++) {
+			REQUIRE(chargingCurrentValues[j] == expectedChargingCurrentValues[i][j]);
+		}
 	}
 }
+
+
+TEST_CASE("Checks for the raw current value for given integer of 'n' bit resolution and measurement range") {
+	float rawCurrentValue, scalingFactor, conversionFactor;
+	int totalCurrentRange, maxIntegerValue;
+	signed int minCurrentValue = 0;
+	signed int maxCurrentValue = 10;
+	
+	totalCurrentRange = calculateTotalCurrentRange(maxCurrentValue, minCurrentValue);
+	scalingFactor = calculateMultiplyingFactor(totalCurrentRange, maxCurrentValue);
+	
+	SECTION("This section runs for each inputValue given in the table") {
+		int ADC_Resolution = 12;
+        	int inputValue;
+       		float expectedRawCurrentValue;
+        	std::tie(inputValue, expectedRawCurrentValue) =
+            	GENERATE( table<int, float>(
+                	{ 
+	                  std::make_tuple( 267, 0.65217 ),
+        	          std::make_tuple( 3456, 8.44162 ),
+                	  std::make_tuple( 1287, 3.14362 ) } ) );
+		maxIntegerValue = calculateMaxIntegerValue(ADC_Resolution);
+		conversionFactor = calculateMultiplyingFactor(inputValue, maxIntegerValue);
+		rawCurrentValue = convertInputIntegerToCurrentValue(conversionFactor, scalingFactor, minCurrentValue, maxCurrentValue);
+		REQUIRE(rawCurrentValue == Approx(expectedRawCurrentValue));
+	}
+}
+
+	
+TEST_CASE("Checks for the rounded off current value for given current value") {
+	
+	SECTION("This section runs for each inputValue given in the table") {
+        float inputValue;
+        int expectedRoundedOffCurrentValue, roundedOffCurrentValue;
+        std::tie(inputValue, expectedRoundedOffCurrentValue) =
+            GENERATE( table<float, int>(
+                { 
+                  std::make_tuple( 0.65217, 1 ),
+                  std::make_tuple( 8.44162, 8 ),
+                  std::make_tuple( 3.14362, 3 ) } ) );
+	roundedOffCurrentValue = roundOffCurrentValue(inputValue);
+	REQUIRE(roundedOffCurrentValue == expectedRoundedOffCurrentValue);
+	}
+}
+
+TEST_CASE("Checks for the absolute value of the given charging current") {
+	
+	SECTION("This section runs for each inputValue given in the table") {
+        int inputValue;
+        int expectedAbsoluteCurrentValue, absoluteCurrentValue;
+        std::tie(inputValue, expectedAbsoluteCurrentValue) =
+            GENERATE( table<int, int>(
+                { 
+                  std::make_tuple( -1, 1 ),
+                  std::make_tuple( -8, 8 ),
+                  std::make_tuple( 3, 3 ) } ) );
+	absoluteCurrentValue = checkIfValueIsAbsoluteAndConvert(&inputValue);
+	REQUIRE(absoluteCurrentValue == expectedAbsoluteCurrentValue);
+	}
+}
+
+
+TEST_CASE("Checks for the max supported integer value for given ADC resolution") {
+	
+	SECTION("This section runs for each inputValue given in the table") {
+        int inputValue;
+        int expectedMaxIntegerValue, maxIntegerValue;
+        std::tie(inputValue, expectedMaxIntegerValue) =
+            GENERATE( table<int, int>(
+                { 
+                  std::make_tuple( 12, 4094 ),
+                  std::make_tuple( 10, 1022) } ) );
+	maxIntegerValue = calculateMaxIntegerValue(inputValue);
+	REQUIRE(maxIntegerValue == expectedMaxIntegerValue);
+	}
+}
+
+TEST_CASE("Checks for the total current range for current value interpretation") {
+
+        int totalCurrentRange;
+	int minCurrentValue[] = {0, -10};
+	int maxCurrentValue[] = {10, 10};
+	int expectedTotalCurrentRange[] = {10, 20};
+
+	size_t numberOfSamples = sizeof(minCurrentValue)/sizeof(minCurrentValue[0]);
+	for(size_t i=0; i<numberOfSamples; i++) {
+		totalCurrentRange = calculateTotalCurrentRange(maxCurrentValue[i], minCurrentValue[i]);
+		REQUIRE(totalCurrentRange == expectedTotalCurrentRange[i]);
+	}
+}
+
