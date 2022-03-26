@@ -92,3 +92,38 @@ struct RangeAndOccurences {
          int maxValue;
          size_t Occurences;
 };
+
+## Test Extension Specification
+------------------------------
+
+1) Add a new method 'interpretTheCurrentValue' for sensing the current with inputs from the current sensor.
+
+2) This method takes array of integers with 'n' bit resolution as input based on the A2D convertor resolution within the current sensor.
+e.g 
+For 12 bit A2D, integer value can be of 12 bit resolution i.e: 0-4095
+For 10 bit A2D, integer value can be of 10 bit resolution i.e: 0-1023
+
+3) This method also takes current measurement range as another parameter
+e.g
+Current Measurement Range can be,
+0 A to 10 A
+-15 A to 15 A
+
+4) This method linearly interprets the current value based on the resolution and measurement range.
+e.g
+For 12bit resolution current sensor with '0-10A' measurement range, integer value '0' corresponds to 0A and the value '4094' corresponds to the 10A.
+For 10bit resolution current sensor with '-15 to 15 A' measurement range, integer value '0' corresponds to -15A , value '1022' correspnds to 15A and the value '511' corresponds to 0A.
+
+5) This method should handle to ignore the error readings based on the resolution.
+eg:
+For 10 bit A2D, integer value '1023' is reported as an error.
+For 12 bit A2D, integer value '4095' is reported as an error.
+
+6) This method should convert the interpreted current values to an absolute value.
+e.g:
+If the current value is interpreted as 2.799 A, it should be rounded off to the nearest integer. i.e 3 A.
+If the current value is interpreted as -12A, it should be converted to it's magnitude. i.e 12A
+
+7) This method returns for an n array of calculated/interpreted current values for given integer array of 'n' bit resolution and for a given measurement range.
+
+8) The output of this method (i.e array of current range) would be given as an input to the already existing method 'interpretChargingCurrentRangeAndOccurences'.

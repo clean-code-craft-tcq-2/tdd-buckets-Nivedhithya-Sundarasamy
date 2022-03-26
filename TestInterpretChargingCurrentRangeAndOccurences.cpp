@@ -35,4 +35,28 @@ TEST_CASE("Checks the charging current range and its occurences for different in
 	freeMemoryForCharJaggedArray(rangeAndOccurences, numberOfRanges);
 }
 
+TEST_CASE("Checks for the current values for given 'n' bit resolution array") {
+	
+	// Input Samples
+	int ADC_ConverterValues_12bit[] = {100, 3096, 2056, 4078};
 
+	// Size of input samples
+	size_t numberOfSamples_12bit = sizeof(ADC_ConverterValues_12bit) / sizeof(ADC_ConverterValues_12bit[0]);
+
+	// Expected Output
+	int expectedChargingCurrentValues[] = {0, 8, 5, 10};
+	
+	// ADC Resolution
+	int ADC_Resolution = 12;
+	
+	// Range of Measurement
+	signed int minCurrentValue = 0;
+	signed int maxCurrentValue = 10;
+	
+	int chargingCurrentValues[numberOfSamples_12bit];
+	
+	interpretChargingCurrentValue(ADC_ConverterValues_12bit, numberOfSamples_12bit, ADC_Resolution, minCurrentValue, maxCurrentValue, chargingCurrentValues);
+	for(size_t i=0; i<numberOfSamples_12bit; i++) {
+		 REQUIRE(chargingCurrentValues[i] == expectedChargingCurrentValues[i]);
+	}
+}
