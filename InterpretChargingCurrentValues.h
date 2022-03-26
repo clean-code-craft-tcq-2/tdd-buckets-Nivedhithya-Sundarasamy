@@ -1,2 +1,2 @@
-void interpretChargingCurrentValue(int ADC_ConvertorValues[], int numberOfSamples, int ADC_Resolution,
-		int minCurrentValue, int maxCurrentValue, int chargingCurrentValues[]);
+void interpretChargingCurrentValue(int ADC_ConvertorValues[], size_t numberOfSamples, int ADC_Resolution,
+		int minCurrentValue, int maxCurrentValue, int* chargingCurrentValues);
