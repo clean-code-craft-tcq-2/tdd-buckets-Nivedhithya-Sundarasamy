@@ -2,6 +2,7 @@
 
 #include "test-framework/catch.hpp"
 #include "InterpretChargingCurrentRangeAndOccurences.h"
+#include "InterpretChargingCurrentValues.h"
 #include <string>
 
 TEST_CASE("Checks the charging current range and its occurences for different input samples") {
