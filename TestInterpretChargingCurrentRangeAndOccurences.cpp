@@ -32,6 +32,7 @@ TEST_CASE("Checks the charging current range and its occurences for different in
 			REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[i][j]) == 0);
 		}
 	}
+	freeMemoryForCharJaggedArray(rangeAndOccurences, numberOfRanges);
 }
 
 

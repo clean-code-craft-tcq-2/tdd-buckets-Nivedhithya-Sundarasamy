@@ -1,8 +1,12 @@
+// Based on the supported ranges array size will be allocated 
+#define NUMBER_OF_RANGES_SUPPORTED 10
+
 struct RangeAndOccurences {
 	int minValue;
 	int maxValue;
 	int Occurences;
 };
+
 void allocateCharJaggedArray(char* p[], int arraySize);
 void allocateIntJaggedArray(int* p[], int arraySize);
 void printOutputInCSV(char* chargingCurrentRangeAndOccurences[], int numberOfRanges);
@@ -21,4 +25,6 @@ int* sortSamples(int* chargingCurrentSamples, size_t numberOfSamples);
 int getGapBetweenConsecutiveElements(int* sortedChargingCurrentSamples,  size_t numberOfSamples, size_t index);
 void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRanges,
 	size_t numberOfSamples, int *subsetOfChargingCurrentSamples[], RangeAndOccurences rangeAndOccurences[]);
+void freeMemoryForCharJaggedArray(char* p[], int arraySize);
+void freeMemoryForIntJaggedArray(char* p[], int arraySize);
 

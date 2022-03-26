@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "InterpretChargingCurrentRangeAndOccurences.h"
 
-// Based on the supported ranges array size will be allocated 
-#define NUMBER_OF_RANGES_SUPPORTED 10
 
 void allocateCharJaggedArray(char* p[], int arraySize){
 	for (int i=0; i < arraySize; i++) {
@@ -21,6 +19,18 @@ void printOutputInCSV(char* chargingCurrentRangeAndOccurences[], int numberOfRan
 	printf("Range, Readings \n");
 	for (int i=0; i<numberOfRanges; i++) {
 		printf("%s\n", chargingCurrentRangeAndOccurences[i]);
+	}
+}
+
+void freeMemoryForCharJaggedArray(char* pChar[], int arraySize) {
+	for (int i=0; i < arraySize; i++) {
+		free(pChar[i]);
+	}
+}
+
+void freeMemoryForIntJaggedArray(int* pInt[], int arraySize) {
+	for (int i=0; i < arraySize; i++) {
+		free(pInt[i]);
 	}
 }
 
@@ -53,6 +63,7 @@ void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], ch
 	}
 	checkForAvailableRanges(sortedChargingCurrentSamples, &numberOfRanges, numberOfSamples, availableRanges, rangeAndOccurences);
 	formatOutputInCSV(rangeAndOccurences, numberOfRanges, availableRanges, chargingCurrentRangeAndOccurences);
+	freeMemoryForIntJaggedArray(availableRanges, NUMBER_OF_RANGES_SUPPORTED);
 }
 
 bool checkValidityStatus(int validElementCount, int numberOfSamples) {
@@ -96,30 +107,12 @@ int* checkForConsecutiveSamples(int* chargingCurrentSamples, size_t numberOfSamp
 
 }
 
-void swap(int* xp, int* yp)
-{
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
 }
-
-void checkIfValuesIsMin(int* chargingCurrentSamples, int* minValueIndex, size_t index){
-	if (chargingCurrentSamples[index] < chargingCurrentSamples[*minValueIndex]){
-		*minValueIndex = index;
-	}
-}
-	
 
 int* sortSamples(int* chargingCurrentSamples, size_t numberOfSamples){
-	int minValueIndex;
-
-	for (size_t i = 0; i < numberOfSamples - 1; i++) {
-        	minValueIndex = i;
-	        for (size_t j = i + 1; j < numberOfSamples; j++){
-			checkIfValuesIsMin(chargingCurrentSamples, &minValueIndex, j);
-    		}
-		swap(&chargingCurrentSamples[minValueIndex], &chargingCurrentSamples[i]);
-	}
+	qsort(chargingCurrentSamples, numberOfSamples, sizeof(int), cmpfunc);
 	return chargingCurrentSamples;	
 }
 
