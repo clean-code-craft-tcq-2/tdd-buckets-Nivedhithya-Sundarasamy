@@ -7,4 +7,4 @@ int checkIfValueIsAbsoluteAndConvert(int *chargingCurrentValue);
 int calculateMaxIntegerValue(int ADC_Resolution);
 int calculateTotalCurrentRange(int maxCurrentValue, int minCurrentValue);
 float calculateMultiplyingFactor(int x, int y);
-void getValidInputValues(int* ADC_Values, int ADC_Resolution, size_t *numberOfValidSamples, int *ValidADC_Values);
+void getValidInputValues(int* ADC_Values, int ADC_Resolution, size_t numberOfSamples, size_t *numberOfValidSamples, int *ValidADC_Values);

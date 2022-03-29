@@ -169,7 +169,7 @@ TEST_CASE("Check for ignoring of the error reading in given input array") {
 	
 	size_t numberOfSamples = sizeof(ADC_Values)/sizeof(ADC_Values[0]);
 	int ValidADC_Values[numberOfSamples];
-	getValidInputValues(ADC_Values, ADC_Resolution, &numberOfValidSamples, ValidADC_Values);
+	getValidInputValues(ADC_Values, ADC_Resolution, numberOfSamples, &numberOfValidSamples, ValidADC_Values);
 	for(size_t i=0; i<numberOfValidSamples; i++){
 		REQUIRE(ValidADC_Values[i] == expectedValidADC_Values[i]);
 	}
