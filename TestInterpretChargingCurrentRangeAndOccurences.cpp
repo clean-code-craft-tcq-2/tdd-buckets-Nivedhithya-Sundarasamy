@@ -62,7 +62,7 @@ TEST_CASE("Checks for the current values for given 'n' bit resolution array and 
 	
 	
 	for(size_t i=0; i<2; i++) {
-		int chargingCurrentValues[i];
+		int chargingCurrentValues[numberOfSamples[i]];
 		interpretChargingCurrentValue(ADC_ConverterValues[i], numberOfSamples[i], ADC_Resolution, minCurrentValue, maxCurrentValue, chargingCurrentValues);
 		for(size_t j=0; j<numberOfSamples[i]; j++) {
 			REQUIRE(chargingCurrentValues[j] == expectedChargingCurrentValues[i][j]);
@@ -160,3 +160,17 @@ TEST_CASE("Checks for the total current range for current value interpretation")
 	}
 }
 
+TEST_CASE("Check for ignoring of the error reading in given input array") {
+
+	int ADC_Values[] = {2387, 4095, 4094};
+	int expectedValidADC_Values[] = {2387, 4094};
+	size_t numberOfValidSamples;
+	int ADC_Resolution = 12;
+	
+	size_t numberOfSamples = sizeof(ADC_Values)/sizeof(ADC_Values[0]);
+	int ValidADC_Values[numberOfSamples];
+	getValidInputValues(ADC_Values, ADC_Resolution, &numberOfValidSamples, ValidADC_Values);
+	for(size_t i=0; i<numberOfValidSamples; i++){
+		REQUIRE(ValidADC_Values[i] == expectedValidADC_Values[i]);
+	}
+}
