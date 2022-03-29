@@ -174,3 +174,32 @@ TEST_CASE("Check for ignoring of the error reading in given input array") {
 		REQUIRE(ValidADC_Values[i] == expectedValidADC_Values[i]);
 	}
 }
+
+TEST_CASE("Ignores the error value and checks for the current values for given 'n' bit resolution array and measurement range") {
+	
+	// Input Samples
+	int ADC_ConverterValues_12bit_0[] = {100, 3096, 2056, 4095};
+ 
+	// Size of input samples
+	size_t numberOfSamples_12bit_0 = sizeof(ADC_ConverterValues_12bit_0) / sizeof(ADC_ConverterValues_12bit_0[0]);
+
+	// Expected Output
+	int expectedChargingCurrentValues_0[] = {0, 8, 5};
+	
+	// ADC Resolution
+	int ADC_Resolution = 12;
+	
+	// Range of Measurement
+	signed int minCurrentValue = 0;
+	signed int maxCurrentValue = 10;
+	
+	size_t numberOfValidSamples;
+	
+	int chargingCurrentValues[numberOfSamples_12bit_0];
+	int ValidADC_Values[numberOfSamples_12bit_0];
+	getValidInputValuesAndInterpretChargingCurrentValue(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
+		minCurrentValue, maxCurrentValue, &numberOfValidSamples, ValidADC_Values, chargingCurrentValues);
+	for(size_t i=0; i<numberOfValidSamples; i++) {
+		REQUIRE(chargingCurrentValues[i] == expectedChargingCurrentValues_0[i]);
+		}
+}
