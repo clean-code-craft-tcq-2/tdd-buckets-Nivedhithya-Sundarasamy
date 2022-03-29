@@ -56,8 +56,9 @@ void interpretChargingCurrentRangeAndOccurences(int chargingCurrentSamples[], ch
 	if(validityStatus)
 		sortedChargingCurrentSamples = checkForConsecutiveSamples(chargingCurrentSamples, numberOfSamples);
 	else{
-		sprintf(chargingCurrentRangeAndOccurences[0], "Invalid Samples");
 		numberOfRanges = 1; //Number of range defaults to 1 for samples with invalied element
+		allocateCharJaggedArray(chargingCurrentRangeAndOccurences, numberOfRanges);
+		sprintf(chargingCurrentRangeAndOccurences[0], "Invalid Samples");
 		printOutputInCSV(chargingCurrentRangeAndOccurences, 1);
 		return;
 	}
@@ -72,7 +73,7 @@ bool checkValidityStatus(int validElementCount, int numberOfSamples) {
 
 int checkIfElementIsValid(int* chargingCurrentSamples, int index, int currentValidElementCount) {
 	int validElementCount=currentValidElementCount;
-	if((chargingCurrentSamples[index] != '\0') && (chargingCurrentSamples[index] > 0))
+	if((chargingCurrentSamples[index] != '\0') && (chargingCurrentSamples[index] >= 0))
 		validElementCount++;
 	return validElementCount;
 }
@@ -150,3 +151,8 @@ void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRan
 	rangeAndOccurences[rowIndex].Occurences = columnIndex;
 	*numberOfRanges = rowIndex+1;
 }
+
+void interpretChargingCurrentRangeAndOccurencesFromADC(int *ADC_ConverterValues_12bit_0, int ADC_Resolution, size_t numberOfSamples_12bit_0,
+         int minCurrentValue, int maxCurrentValue, size_t *numberOfValidSamples, int* ValidADC_Values, int* chargingCurrentValues, char* rangeAndOccurences[], int numberOfRanges){
+}
+

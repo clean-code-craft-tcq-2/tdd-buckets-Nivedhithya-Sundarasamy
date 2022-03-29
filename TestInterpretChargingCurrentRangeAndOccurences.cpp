@@ -211,3 +211,35 @@ TEST_CASE("Ignores the error value and checks for the current values for given '
                  }
          }
 }
+
+TEST_CASE("Checks for the current range and occurences for given ADC values") {
+
+	 // Input Samples
+         int ADC_ConverterValues_12bit_0[] = {700, 400, 3096, 2056, 4095, 3200};
+
+         // Size of input samples
+         size_t numberOfSamples_12bit_0 = sizeof(ADC_ConverterValues_12bit_0) / sizeof(ADC_ConverterValues_12bit_0[0]);
+
+        // Expected Output
+	 const char *expectedOutput[4] = {"1-2, 2", "5-5, 1", "8-8, 2"};
+
+         // ADC Resolution
+         int ADC_Resolution = 12;
+
+         // Range of Measurement
+         signed int minCurrentValue = 0;
+         signed int maxCurrentValue = 10;
+
+         size_t numberOfValidSamples;
+	
+	
+	char* rangeAndOccurences[3];
+	int numberOfRanges=1;
+	int chargingCurrentValues[numberOfSamples_12bit_0];
+        int ValidADC_Values[numberOfSamples_12bit_0];
+	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
+	minCurrentValue, maxCurrentValue,  &numberOfValidSamples, ValidADC_Values, chargingCurrentValues, rangeAndOccurences, numberOfRanges);
+	for(int j=0; j < numberOfRanges; j++) {
+		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
+	}
+}
