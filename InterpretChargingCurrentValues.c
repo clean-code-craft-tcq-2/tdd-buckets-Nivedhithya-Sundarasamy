@@ -75,4 +75,6 @@ void getValidInputValues(int* ADC_Values, int ADC_Resolution, size_t numberOfSam
 
 void getValidInputValuesAndInterpretChargingCurrentValue(int* ADC_ConverterValues, int ADC_Resolution,
          size_t numberOfSamples, int minCurrentValue, int maxCurrentValue, size_t *numberOfValidSamples, int *ValidADC_Values, int *chargingCurrentValues){
+	getValidInputValues(ADC_ConverterValues, ADC_Resolution, numberOfSamples, numberOfValidSamples, ValidADC_Values);
+	interpretChargingCurrentValue(ValidADC_Values, numberOfSamples, ADC_Resolution, minCurrentValue, maxCurrentValue, chargingCurrentValues);	
 }
