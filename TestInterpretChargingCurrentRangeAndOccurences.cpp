@@ -212,6 +212,18 @@ TEST_CASE("Ignores the error value and checks for the current values for given '
          }
 }
 
+void testInterpretChargingCurrentRangeAndOccurencesFromADC(int* ADC_ConverterValues, int ADC_Resolution, size_t numberOfSamples,
+	int minCurrentValue, int maxCurrentValue, const char* expectedOutput[]) {
+	char* rangeAndOccurences[5];
+	int numberOfRanges=0;
+	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues, ADC_Resolution, numberOfSamples,
+	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
+	for(int j=0; j < numberOfRanges; j++) {
+		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
+	}
+	freeMemoryForCharJaggedArray(rangeAndOccurences, numberOfRanges);
+}
+
 TEST_CASE("Checks for the current range and occurences for given ADC values of 12 bit resolution") {
 
 	 // Input Samples
@@ -229,14 +241,9 @@ TEST_CASE("Checks for the current range and occurences for given ADC values of 1
          // Range of Measurement
          signed int minCurrentValue = 0;
          signed int maxCurrentValue = 10;
-
-	char* rangeAndOccurences[3];
-	int numberOfRanges=0;
-	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
-	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
-	for(int j=0; j < numberOfRanges; j++) {
-		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
-	}
+	
+	testInterpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
+	minCurrentValue, maxCurrentValue, expectedOutput);
 }
 
 TEST_CASE("Checks for the current range and occurences for given ADC values of 10 bit resolution") {
@@ -257,11 +264,6 @@ TEST_CASE("Checks for the current range and occurences for given ADC values of 1
          signed int minCurrentValue = -15;
          signed int maxCurrentValue = 15;
 
-	char* rangeAndOccurences[3];
-	int numberOfRanges=0;
-	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_10bit_0, ADC_Resolution, numberOfSamples_10bit_0,
-	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
-	for(int j=0; j < numberOfRanges; j++) {
-		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
-	}
+	testInterpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_10bit_0, ADC_Resolution, numberOfSamples_10bit_0,
+	minCurrentValue, maxCurrentValue, expectedOutput);
 }
