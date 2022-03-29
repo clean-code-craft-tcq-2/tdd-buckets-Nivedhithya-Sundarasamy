@@ -36,7 +36,7 @@ TEST_CASE("Checks the charging current range and its occurences for different in
 	freeMemoryForCharJaggedArray(rangeAndOccurences, numberOfRanges);
 }
 
-TEST_CASE("Checks for the current values for given 'n' bit resolution array and measurement range") {
+TEST_CASE("Checks for the current values for given '12' bit resolution array and measurement range") {
 	
 	// Input Samples
 	int ADC_ConverterValues_12bit_0[] = {100, 3096, 2056, 4078};
@@ -71,7 +71,7 @@ TEST_CASE("Checks for the current values for given 'n' bit resolution array and 
 }
 
 
-TEST_CASE("Checks for the raw current value for given integer of 'n' bit resolution and measurement range") {
+TEST_CASE("Checks for the raw current value for given integer of '12' bit resolution and measurement range") {
 	float rawCurrentValue, scalingFactor, conversionFactor;
 	int totalCurrentRange, maxIntegerValue;
 	signed int minCurrentValue = 0;
@@ -175,7 +175,7 @@ TEST_CASE("Check for ignoring of the error reading in given input array") {
 	}
 }
 
-TEST_CASE("Ignores the error value and checks for the current values for given 'n' bit resolution array and measurement range") {
+TEST_CASE("Ignores the error value and checks for the current values for given '12' bit resolution array and measurement range") {
 
 // Input Samples
          int ADC_ConverterValues_12bit_0[] = {100, 3096, 2056, 4095};
@@ -212,7 +212,7 @@ TEST_CASE("Ignores the error value and checks for the current values for given '
          }
 }
 
-TEST_CASE("Checks for the current range and occurences for given ADC values") {
+TEST_CASE("Checks for the current range and occurences for given ADC values of 12 bit resolution") {
 
 	 // Input Samples
          int ADC_ConverterValues_12bit_0[] = {700, 400, 3096, 2056, 4095, 3200};
@@ -233,6 +233,33 @@ TEST_CASE("Checks for the current range and occurences for given ADC values") {
 	char* rangeAndOccurences[3];
 	int numberOfRanges=0;
 	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
+	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
+	for(int j=0; j < numberOfRanges; j++) {
+		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
+	}
+}
+
+TEST_CASE("Checks for the current range and occurences for given ADC values of 10 bit resolution") {
+
+	 // Input Samples
+         int ADC_ConverterValues_10bit_0[] = {200, 1000, 350, 1023, 540};
+
+         // Size of input samples
+         size_t numberOfSamples_10bit_0 = sizeof(ADC_ConverterValues_10bit_0) / sizeof(ADC_ConverterValues_10bit_0[0]);
+
+        // Expected Output
+	 const char *expectedOutput[4] = {"1-1, 1", "5-5, 1", "9-9, 1", "14-14, 1"};
+
+         // ADC Resolution
+         int ADC_Resolution = 10;
+
+         // Range of Measurement
+         signed int minCurrentValue = -15;
+         signed int maxCurrentValue = 15;
+
+	char* rangeAndOccurences[3];
+	int numberOfRanges=0;
+	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_10bit_0, ADC_Resolution, numberOfSamples_10bit_0,
 	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
 	for(int j=0; j < numberOfRanges; j++) {
 		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);

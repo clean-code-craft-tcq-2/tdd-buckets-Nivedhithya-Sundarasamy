@@ -54,7 +54,7 @@ void interpretChargingCurrentValue(int ADC_ConvertorValues[], size_t numberOfSam
 		conversionFactor = calculateMultiplyingFactor(ADC_ConvertorValues[i], maxIntegerValue);
 		currentValue = convertInputIntegerToCurrentValue(conversionFactor, scalingFactor, minCurrentValue, maxCurrentValue);
 		chargingCurrentValues[i] = roundOffCurrentValue(currentValue);
-		checkIfValueIsAbsoluteAndConvert(&chargingCurrentValues[i]);
+		chargingCurrentValues[i] = checkIfValueIsAbsoluteAndConvert(&chargingCurrentValues[i]);
 	}	
 }
 
