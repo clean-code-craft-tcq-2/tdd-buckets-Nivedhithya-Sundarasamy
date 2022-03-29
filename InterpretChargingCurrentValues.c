@@ -58,3 +58,6 @@ void interpretChargingCurrentValue(int ADC_ConvertorValues[], size_t numberOfSam
 	}	
 }
 
+void getValidInputValues(int* ADC_Values, int ADC_Resolution, size_t *numberOfValidSamples, int *ValidADC_Values) {
+}
+
