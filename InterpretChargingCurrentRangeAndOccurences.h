@@ -27,5 +27,5 @@ void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRan
 	size_t numberOfSamples, int *subsetOfChargingCurrentSamples[], RangeAndOccurences rangeAndOccurences[]);
 void freeMemoryForCharJaggedArray(char* p[], int arraySize);
 void freeMemoryForIntJaggedArray(char* p[], int arraySize);
-void interpretChargingCurrentRangeAndOccurencesFromADC(int *ADC_ConverterValues_12bit_0, int ADC_Resolution, size_t numberOfSamples_12bit_0,
-        int minCurrentValue, int maxCurrentValue, size_t *numberOfValidSamples, int* ValidADC_Values, int* chargingCurrentValues, char* rangeAndOccurences[], int numberOfRanges);
+void interpretChargingCurrentRangeAndOccurencesFromADC(int *ADC_ConverterValues, int ADC_Resolution, size_t numberOfSamples,
+        int minCurrentValue, int maxCurrentValue, char* rangeAndOccurences[], int numberOfRanges);

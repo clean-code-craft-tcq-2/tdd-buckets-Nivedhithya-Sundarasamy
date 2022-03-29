@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "InterpretChargingCurrentRangeAndOccurences.h"
+#include "InterpretChargingCurrentValues.h"
 
 
 void allocateCharJaggedArray(char* p[], int arraySize){
@@ -152,7 +153,14 @@ void checkForAvailableRanges(int* sortedChargingCurrentSamples, int *numberOfRan
 	*numberOfRanges = rowIndex+1;
 }
 
-void interpretChargingCurrentRangeAndOccurencesFromADC(int *ADC_ConverterValues_12bit_0, int ADC_Resolution, size_t numberOfSamples_12bit_0,
-         int minCurrentValue, int maxCurrentValue, size_t *numberOfValidSamples, int* ValidADC_Values, int* chargingCurrentValues, char* rangeAndOccurences[], int numberOfRanges){
+void interpretChargingCurrentRangeAndOccurencesFromADC(int *ADC_ConverterValues, int ADC_Resolution, size_t numberOfSamples,
+         int minCurrentValue, int maxCurrentValue, char* rangeAndOccurences[], int numberOfRanges){
+	 int chargingCurrentValues[numberOfSamples];
+         int ValidADC_Values[numberOfSamples];
+	 size_t numberOfValidSamples; 
+
+	getValidInputValuesAndInterpretChargingCurrentValue(ADC_ConverterValues, ADC_Resolution, numberOfSamples,
+                         minCurrentValue, maxCurrentValue, &numberOfValidSamples, ValidADC_Values, chargingCurrentValues);
+	interpretChargingCurrentRangeAndOccurences(chargingCurrentValues, rangeAndOccurences, numberOfRanges, numberOfValidSamples);
 }
 

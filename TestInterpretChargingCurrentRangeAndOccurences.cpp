@@ -230,15 +230,10 @@ TEST_CASE("Checks for the current range and occurences for given ADC values") {
          signed int minCurrentValue = 0;
          signed int maxCurrentValue = 10;
 
-         size_t numberOfValidSamples;
-	
-	
 	char* rangeAndOccurences[3];
-	int numberOfRanges=1;
-	int chargingCurrentValues[numberOfSamples_12bit_0];
-        int ValidADC_Values[numberOfSamples_12bit_0];
+	int numberOfRanges=0;
 	interpretChargingCurrentRangeAndOccurencesFromADC(ADC_ConverterValues_12bit_0, ADC_Resolution, numberOfSamples_12bit_0,
-	minCurrentValue, maxCurrentValue,  &numberOfValidSamples, ValidADC_Values, chargingCurrentValues, rangeAndOccurences, numberOfRanges);
+	minCurrentValue, maxCurrentValue, rangeAndOccurences, numberOfRanges);
 	for(int j=0; j < numberOfRanges; j++) {
 		REQUIRE(strcmp(rangeAndOccurences[j], expectedOutput[j]) == 0);
 	}
